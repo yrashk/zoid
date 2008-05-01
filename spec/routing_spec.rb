@@ -4,6 +4,7 @@ module RoutingExample
   nsurl 'http://strokedb.com/zoid/spec#routing'
   remove_const(:SomeName) if defined?(SomeName)
   SomeName = StrokeDB::Meta.new
+  AnotherMeta = StrokeDB::Meta.new
   SomeView = StrokeDB::View.create!("SomeView") do |view|
     def view.map(key,val)
     end
@@ -31,6 +32,11 @@ describe Zoid::Application, "router" do
   it "should route GET + /name/uuid to a named entity with specified UUID" do
     doc = RoutingExample::SomeName.create!
     @app.route_for('GET', "/some_name/#{doc.uuid}").should == doc
+  end
+
+  it "should route GET + /name/uuid to DocumentNotFound document if specified UUID with given meta was not found" do
+    doc = RoutingExample::AnotherMeta.create!
+    @app.route_for('GET', "/some_name/#{doc.uuid}").should be_a_kind_of(Zoid::DocumentNotFound)
   end
 
   it "should route GET + /name/uuid.version to a named entity with specified UUID" do
