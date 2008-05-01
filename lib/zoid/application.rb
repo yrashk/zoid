@@ -7,7 +7,12 @@ module Zoid
     def route_for(method, path)
       case path
       when /^\/(\w+)[\/]?$/
-        app_module.const_get($1.camelize)
+        case entity = app_module.const_get($1.camelize)
+        when StrokeDB::Meta
+          entity.document
+        when StrokeDB::View
+          entity
+        end
       when /^\/(\w+)\/#{StrokeDB::UUID_RE}$/
         store.find($2)
       when /^\/(\w+)\/#{StrokeDB::UUID_RE}.#{StrokeDB::UUID_RE}$/

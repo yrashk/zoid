@@ -9,3 +9,9 @@ def setup_default_store
   FileUtils.rm_rf TEMP_STORAGES + '/spec'
   StrokeDB::Config.build :default => true, :base_path => TEMP_STORAGES + '/spec'
 end
+
+setup_default_store
+
+at_exit do
+  FileUtils.rm_rf TEMP_STORAGES + '/spec'
+end
